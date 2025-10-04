@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AlerteCompteur</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: #2d3e50;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            color: #4fd1c5;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: #e53e3e;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .add-btn {
+            background: #4fd1c5;
+            color: #1a202c;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .add-btn:hover {
+            background: #38b2a8;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .property-card {
+            background: #2d3e50;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .property-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+        }
+        
+        .property-pdl {
+            color: #a0aec0;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .property-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-empty {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .property-info {
+            color: #cbd5e0;
+            margin: 0.5rem 0;
+        }
+        
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-edit {
+            background: #4299e1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .btn-delete {
+            background: #e53e3e;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #2d3e50;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            color: #a0aec0;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        input, select {
+            background: #1a2332;
+            border: 1px solid #4a5568;
+            color: #fff;
+            width: 100%;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: #2d3e50;
+            border-radius: 1rem;
+            color: #a0aec0;
+        }
+        
+        .empty-state h3 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        #toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .toast {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toast.success {
+            background: #48bb78;
+        }
+        
+        .toast.error {
+            background: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <div class="container">
+        <header>
+            <div>
+                <h1 style="margin: 0;">Mon Tableau de Bord</h1>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <span class="user-info" id="user-email">Connecté en tant que : ...</span>
+                <button class="logout-btn" onclick="logout()">Se déconnecter</button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="section-header">
+                <h2 style="color: white; margin: 0;">Mes Biens</h2>
+                <button class="add-btn" onclick="openAddPropertyModal()">+ Ajouter un bien</button>
+            </div>
+            
+            <div id="properties-container">
+                <div class="empty-state">
+                    <h3>Aucun bien pour le moment</h3>
+                    <p>Cliquez sur "Ajouter un bien" pour commencer la surveillance</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal Ajout/Modification Bien -->
+    <div id="property-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title" style="color: white; margin: 0;">Ajouter un bien</h3>
+                <button class="close-modal" onclick="closePropertyModal()">&times;</button>
+            </div>
+            
+            <form id="property-form">
+                <input type="hidden" id="property-id">
+                
+                <div class="form-group">
+                    <label for="label">Nom du bien *</label>
+                    <input type="text" id="label" required placeholder="Ex: Villa Marseille">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Adresse *</label>
+                    <input type="text" id="address" required placeholder="Ex: 15 rue de la République">
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">Ville *</label>
+                    <input type="text" id="city" required placeholder="Ex: Marseille">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postal_code">Code postal *</label>
+                    <input type="text" id="postal_code" required placeholder="Ex: 13001">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pdl">Numéro PDL (Point de Livraison) *</label>
+                    <input type="text" id="pdl" required placeholder="Ex: 12252545245" maxlength="14">
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Statut</label>
+                    <select id="status">
+                        <option value="EMPTY">Vide</option>
+                        <option value="OCCUPIED">Occupé</option>
+                        <option value="MAINTENANCE">Maintenance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="threshold_alert">Seuil d'alerte (kWh/jour)</label>
+                    <input type="number" id="threshold_alert" step="0.1" placeholder="Ex: 2.0" value="2.0">
+                </div>
+                
+                <button type="submit" style="width: 100%; background: #4fd1c5; color: #1a202c; font-weight: 600;">
+                    Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentPropertyId = null;
+        
+        // Fonction pour afficher les toasts
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 5000);
+        }
+        
+        // Récupérer le token
+        function getToken() {
+            return localStorage.getItem('accessToken');
+        }
+        
+        // Déconnexion
+        function logout() {
+            localStorage.removeItem('accessToken');
+            window.location.href = '/login.html';
+        }
+        
+        // Charger les infos utilisateur
+        async function loadUserInfo() {
+            try {
+                const response = await fetch(`${API_URL}/users/me/`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('user-email').textContent = `Connecté en tant que : ${user.email}`;
+                } else if (response.status === 401) {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        // Charger les biens
+        async function loadProperties() {
+            try {
+                const response = await fetch(`${API_URL}/properties/`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.ok) {
+                    const properties = await response.json();
+                    displayProperties(properties);
+                } else if (response.status === 401) {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('Erreur lors du chargement des biens', 'error');
+            }
+        }
+        
+        // Afficher les biens
+        function displayProperties(properties) {
+            const container = document.getElementById('properties-container');
+            
+            if (properties.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Aucun bien pour le moment</h3>
+                        <p>Cliquez sur "Ajouter un bien" pour commencer la surveillance</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '<div class="properties-grid">' + 
+                properties.map(property => {
+                    const status = property.status || 'EMPTY';
+                    const statusLabel = status === 'EMPTY' ? 'Vide' : status === 'OCCUPIED' ? 'Occupé' : 'Maintenance';
+                    
+                    return `
+                        <div class="property-card">
+                            <div class="property-header">
+                                <div>
+                                    <h3 class="property-title">${property.label || 'Sans nom'}</h3>
+                                    <div class="property-pdl">PDL: ${property.pdl}</div>
+                                </div>
+                                <span class="property-status status-${status.toLowerCase()}">
+                                    ${statusLabel}
+                                </span>
+                            </div>
+                            
+                            <div class="property-info">
+                                📍 ${property.address || ''}, ${property.city || ''} ${property.postal_code || ''}
+                            </div>
+                            
+                            <div class="property-info">
+                                ⚡ Seuil d'alerte: ${property.threshold_alert || 2.0} kWh/jour
+                            </div>
+                            
+                            <div class="property-actions">
+                                <button class="btn-edit" onclick="editProperty(${property.id})">Modifier</button>
+                                <button class="btn-delete" onclick="deleteProperty(${property.id})">Supprimer</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('') + '</div>';
+        }
+        
+        // Ouvrir modal ajout
+        function openAddPropertyModal() {
+            currentPropertyId = null;
+            document.getElementById('modal-title').textContent = 'Ajouter un bien';
+            document.getElementById('property-form').reset();
+            document.getElementById('property-id').value = '';
+            document.getElementById('property-modal').classList.add('active');
+        }
+        
+        // Fermer modal
+        function closePropertyModal() {
+            document.getElementById('property-modal').classList.remove('active');
+        }
+        
+        // Éditer un bien
+        async function editProperty(id) {
+            try {
+                const response = await fetch(`${API_URL}/properties/`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.ok) {
+                    const properties = await response.json();
+                    const property = properties.find(p => p.id === id);
+                    
+                    if (property) {
+                        currentPropertyId = id;
+                        document.getElementById('modal-title').textContent = 'Modifier le bien';
+                        document.getElementById('property-id').value = id;
+                        document.getElementById('label').value = property.label;
+                        document.getElementById('address').value = property.address;
+                        document.getElementById('city').value = property.city;
+                        document.getElementById('postal_code').value = property.postal_code;
+                        document.getElementById('pdl').value = property.pdl;
+                        document.getElementById('status').value = property.status;
+                        document.getElementById('threshold_alert').value = property.threshold_alert;
+                        
+                        document.getElementById('property-modal').classList.add('active');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('Erreur lors du chargement du bien', 'error');
+            }
+        }
+        
+        // Supprimer un bien
+        async function deleteProperty(id) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce bien ?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/properties/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.ok || response.status === 204) {
+                    showToast('Bien supprimé avec succès', 'success');
+                    loadProperties();
+                } else {
+                    showToast('Erreur lors de la suppression', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('Erreur lors de la suppression', 'error');
+            }
+        }
+        
+        // Soumettre le formulaire
+        document.getElementById('property-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const propertyData = {
+                label: document.getElementById('label').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                postal_code: document.getElementById('postal_code').value,
+                pdl: document.getElementById('pdl').value,
+                status: document.getElementById('status').value,
+                threshold_alert: parseFloat(document.getElementById('threshold_alert').value) || 2.0
+            };
+            
+            try {
+                const propertyId = document.getElementById('property-id').value;
+                const url = propertyId ? `${API_URL}/properties/${propertyId}` : `${API_URL}/properties/`;
+                const method = propertyId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(propertyData)
+                });
+                
+                if (response.ok) {
+                    showToast(propertyId ? 'Bien modifié avec succès' : 'Bien ajouté avec succès', 'success');
+                    closePropertyModal();
+                    loadProperties();
+                } else {
+                    const error = await response.json();
+                    showToast(error.detail || 'Erreur lors de l\'enregistrement', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+        
+        // Fermer modal en cliquant à l'extérieur
+        document.getElementById('property-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'property-modal') {
+                closePropertyModal();
+            }
+        });
+        
+        // Charger au démarrage
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!getToken()) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            loadUserInfo();
+            loadProperties();
+        });
+    </script>
+</body>
+</html>

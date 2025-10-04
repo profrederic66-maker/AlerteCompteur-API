@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - AlerteCompteur</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%);
+        }
+        
+        .login-container {
+            max-width: 450px;
+            width: 100%;
+            padding: 2rem;
+            background: #2d3e50;
+            border-radius: 1rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        
+        label {
+            color: #a0aec0;
+        }
+        
+        input {
+            background: #1a2332;
+            border: 1px solid #4a5568;
+            color: #fff;
+        }
+        
+        input:focus {
+            border-color: #4fd1c5;
+        }
+        
+        button[type="submit"] {
+            background: #4fd1c5;
+            color: #1a202c;
+            font-weight: 600;
+        }
+        
+        button[type="submit"]:hover {
+            background: #38b2a8;
+        }
+        
+        #toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <div class="login-container">
+        <h1>Connexion</h1>
+        
+        <form id="login-form">
+            <label for="email">Email</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="test3@gmail.com" 
+                required
+            >
+            
+            <label for="password">Mot de passe</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="••••••••••••" 
+                required
+            >
+            
+            <button type="submit" id="submit-button">Se connecter</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

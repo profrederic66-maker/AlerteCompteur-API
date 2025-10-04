@@ -1,0 +1,272 @@
+/* --- Variables de Design (Palette de Couleurs) --- */
+:root {
+    --dark-bg: #111827;
+    --dark-card: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --accent-color: #2dd4bf;
+    --accent-color-hover: #14b8a6;
+    --danger-color: #f87171;
+    --danger-color-hover: #ef4444;
+    --border-color: #374151;
+}
+
+/* --- Réglages Généraux --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* --- Conteneur Principal --- */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Styles spécifiques aux pages --- */
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.dashboard-body {
+    padding: 20px;
+}
+.landing-body {
+    display: block; /* La landing page n'a pas besoin de flexbox sur le body */
+}
+
+/* --- Page de Connexion --- */
+.login-container {
+    background-color: var(--dark-card);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+/* --- Tableau de Bord --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-card);
+    padding: 15px 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+header h1 { margin: 0; }
+#logout-button {
+    background-color: var(--dark-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+#logout-button:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--text-primary);
+}
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.column {
+    background-color: var(--dark-card);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* --- Formulaires (Style unifié) --- */
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-primary);
+    font-size: 1em;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.3);
+}
+button[type="submit"] {
+    background-color: var(--accent-color);
+    color: var(--dark-bg);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+button[type="submit"]:hover { background-color: var(--accent-color-hover); }
+.error {
+    color: var(--danger-color);
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+/* --- Listes (Biens, Alertes, etc.) --- */
+ul { list-style-type: none; padding: 0; margin-top: 20px; }
+#properties-list li { border-bottom: 1px solid var(--border-color); }
+.property-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5px;
+}
+.property-item span.clickable { cursor: pointer; flex-grow: 1; transition: color 0.2s ease; }
+.property-item span.clickable:hover { color: var(--accent-color); }
+.buttons button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+.buttons .delete-btn:hover { background-color: var(--danger-color); border-color: var(--danger-color); color: var(--text-primary); }
+.buttons .edit-btn:hover { background-color: var(--accent-color); border-color: var(--accent-color); color: var(--dark-bg); }
+#alerts-list li, #consents-list li {
+    padding: 8px;
+    background-color: var(--dark-bg);
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-size: 0.95em;
+    border-left: 3px solid var(--accent-color);
+}
+
+/* --- Styles pour la Landing Page --- */
+.navbar {
+    background-color: #1f293799;
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-color);
+}
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.brand {
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--accent-color);
+}
+.nav-button {
+    background-color: var(--accent-color);
+    color: var(--dark-bg);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+.nav-button:hover {
+    background-color: var(--accent-color-hover);
+}
+.hero {
+    text-align: center;
+    padding: 100px 0;
+}
+.hero h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+.hero p {
+    font-size: 1.2em;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.cta-button {
+    background-color: var(--accent-color);
+    color: var(--dark-bg);
+    padding: 15px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+    background-color: var(--accent-color-hover);
+}
+.features {
+    padding: 60px 0;
+    text-align: center;
+}
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    text-align: left;
+}
+.feature {
+    background-color: var(--dark-card);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+.feature h3 {
+    font-size: 1.5em;
+    color: var(--accent-color);
+}
+.feature p {
+    color: var(--text-secondary);
+}
+.footer {
+    background-color: var(--dark-card);
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Utilitaires */
+hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; }
+.hidden { display: none; }
